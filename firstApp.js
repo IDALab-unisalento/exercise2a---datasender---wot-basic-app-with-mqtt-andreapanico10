@@ -1,6 +1,8 @@
-const http = require('http')
-
+const http = require('http');
+const mqtt= require('mqtt');
 // initialize the request
+
+var client = mqtt.connect("http://broker.hivemq.com",{clientid:"mqttjs01_giucas_casella"})
 
 // Automatically update sensor value every 2 seconds
 //we use a nested function (function inside another function)
@@ -12,32 +14,7 @@ setInterval(function() {
         'temperature': Math.random(0,40)
     })
 
-    const options = {
 
-        hostname: 'localhost',
-        port: 3000,
-        path: '/temperature',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': data.length
-        }
-    }
+    client.publish("test-topic-handson/era lillo",data);
 
-    const req = http.request(options, res => {
-        console.log(`statusCode: ${res.statusCode}`);
-
-        //define the callback function that will print the result of the request in case of success
-        res.on('data', d => {
-            process.stdout.write(d);
-        })
-
-        //define the callback function that will print the result of the request in case of error
-        req.on('error', error => {
-            console.error(error);
-        })
-    })
-    //send the request
-    req.write(data);
-    req.end();
 }, 2000);
